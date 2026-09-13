@@ -7,15 +7,17 @@ import os
 st.title("🌐 AI Browser Automation Agent")
 st.write("Apna task likhein aur AI khud browser par perform karega!")
 
+# Streamlit Secrets se automatically API key uthane ke liye
+if "GOOGLE_API_KEY" in st.secrets:
+    os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+
 task = st.text_input("Task likhein (maslan: Search for latest AI news on Google):")
-api_key = st.text_input("Apni Gemini API Key enter karein:", type="password")
 
 if st.button("Run Agent"):
-    if not api_key or not task:
-        st.error("Barah-e-karam API Key aur Task dono enter karein!")
+    if "GOOGLE_API_KEY" not in os.environ or not os.environ["GOOGLE_API_KEY"] or not task:
+        st.error("Barah-e-karam Streamlit Secrets mein API Key set karein aur Task enter karein!")
     else:
-        os.environ["GOOGLE_API_KEY"] = api_key
-        st.info("Agent kaam shuru kar raha hai, barah-e-karam intezaar karein...")
+        st.info("Agent kaam shuru kar raha hai, intezaar karein...")
         
         async def main():
             llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
