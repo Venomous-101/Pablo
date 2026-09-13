@@ -32,7 +32,8 @@ if st.button("Run Agent"):
         st.info("Agent kaam shuru kar raha hai, intezaar karein...")
         
         async def main():
-            llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+            # Sahi model name jo browser-use ke sath properly format output dega
+            llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
             object.__setattr__(llm, "provider", "google")
             
             agent = Agent(task=task, llm=llm)
