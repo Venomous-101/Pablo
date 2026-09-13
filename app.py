@@ -3,17 +3,8 @@ import os
 import streamlit as st
 import asyncio
 
-# Cloud par writable directory set karna taake browser download ho sakay
-os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/tmp/ms-playwright"
-
-@st.cache_resource
-def setup_playwright():
-    os.system("playwright install chromium")
-
-try:
-    setup_playwright()
-except Exception:
-    pass
+# Streamlit Cloud ke system chromium ko direct use karne ke liye
+os.environ["PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH"] = "/usr/bin/chromium"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir in sys.path:
@@ -38,13 +29,12 @@ if st.button("Run Agent"):
     if "GOOGLE_API_KEY" not in os.environ or not os.environ["GOOGLE_API_KEY"] or not task:
         st.error("Barah-e-karam Streamlit Secrets mein API Key set karein aur Task enter karein!")
     else:
-        st.info("Agent kaam shuru kar raha hai, background mein browser download ho raha hai, intezaar karein...")
+        st.info("Agent kaam shuru kar raha hai, intezaar karein...")
         
         async def main():
             llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
             object.__setattr__(llm, "provider", "google")
             
-            # Clean agent initialization without broken imports
             agent = Agent(task=task, llm=llm)
             result = await agent.run()
             return result
