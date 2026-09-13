@@ -1,0 +1,3 @@
+browser-use
+streamlit
+langchain-google-genai
