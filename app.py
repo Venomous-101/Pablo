@@ -3,7 +3,6 @@ import os
 import streamlit as st
 import asyncio
 
-# Streamlit Cloud ke system chromium ko direct use karne ke liye
 os.environ["PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH"] = "/usr/bin/chromium"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -32,8 +31,8 @@ if st.button("Run Agent"):
         st.info("Agent kaam shuru kar raha hai, intezaar karein...")
         
         async def main():
-            # Sahi model name jo browser-use ke sath properly format output dega
-            llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+            # gemini-2.0-flash aur temperature=0.0 strict format error ko fix kar dega
+            llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.0)
             object.__setattr__(llm, "provider", "google")
             
             agent = Agent(task=task, llm=llm)
