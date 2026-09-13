@@ -30,7 +30,8 @@ if st.button("Run Agent"):
         
         async def main():
             llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
-            llm.provider = "google"  # Fix for browser-use attribute check
+            # Pydantic validation bypass karke provider attribute inject karne ka tareeqa
+            object.__setattr__(llm, "provider", "google")
             agent = Agent(task=task, llm=llm)
             result = await agent.run()
             return result
