@@ -24,7 +24,7 @@ if current_dir in sys.path:
     sys.path.insert(0, current_dir)
 
 from langchain_google_genai import ChatGoogleGenerativeAI
-from browser_use import Agent, Browser, BrowserConfig
+from browser_use import Agent
 
 st.title("🌐 AI Browser Automation Agent")
 st.write("Apna task likhein aur AI khud browser par perform karega!")
@@ -44,15 +44,8 @@ if st.button("Run Agent"):
             llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
             object.__setattr__(llm, "provider", "google")
             
-            # Explicit cloud browser configuration
-            browser = Browser(
-                config=BrowserConfig(
-                    headless=True,
-                    disable_security=True,
-                )
-            )
-            
-            agent = Agent(task=task, llm=llm, browser=browser)
+            # Clean agent initialization without broken imports
+            agent = Agent(task=task, llm=llm)
             result = await agent.run()
             return result
 
