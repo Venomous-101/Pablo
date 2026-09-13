@@ -1,13 +1,22 @@
+import sys
+import os
 import streamlit as st
 import asyncio
-from browser_use import Agent
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir in sys.path:
+    sys.path.remove(current_dir)
+    import site
+    for path in site.getsitepackages():
+        sys.path.append(path)
+    sys.path.insert(0, current_dir)
+
 from langchain_google_genai import ChatGoogleGenerativeAI
-import os
+from browser_use import Agent
 
 st.title("🌐 AI Browser Automation Agent")
 st.write("Apna task likhein aur AI khud browser par perform karega!")
 
-# Streamlit Secrets se automatically API key uthane ke liye
 if "GOOGLE_API_KEY" in st.secrets:
     os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
 
@@ -21,6 +30,7 @@ if st.button("Run Agent"):
         
         async def main():
             llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+            llm.provider = "google"  # Fix for browser-use attribute check
             agent = Agent(task=task, llm=llm)
             result = await agent.run()
             return result
