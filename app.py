@@ -15,6 +15,7 @@ if current_dir in sys.path:
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from browser_use import Agent
+from browser_use.browser.browser import Browser, BrowserConfig
 
 st.title("🌐 AI Browser Automation Agent")
 st.write("Apna task likhein aur AI khud browser par perform karega!")
@@ -31,11 +32,18 @@ if st.button("Run Agent"):
         st.info("Agent kaam shuru kar raha hai, intezaar karein...")
         
         async def main():
-            # gemini-2.0-flash aur temperature=0.0 strict format error ko fix kar dega
             llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.0)
             object.__setattr__(llm, "provider", "google")
             
-            agent = Agent(task=task, llm=llm)
+            # Cloud environment ke liye proper browser instance
+            browser = Browser(
+                config=BrowserConfig(
+                    headless=True,
+                    disable_security=True,
+                )
+            )
+            
+            agent = Agent(task=task, llm=llm, browser=browser)
             result = await agent.run()
             return result
 
